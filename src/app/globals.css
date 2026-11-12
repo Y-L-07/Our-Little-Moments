@@ -31,7 +31,7 @@ button:disabled { cursor: default; }
 .cat-pair { position: relative; width: 100%; aspect-ratio: 3 / 2; }
 .cat-slot { position: absolute; inset: 0 auto 0 0; width: 50%; }
 .cat-slot-right { left: 50%; }
-.cat-portrait { position: absolute; inset: 0; transform-origin: 50% 82%; transform: translateX(var(--head-x, 0px)) rotate(var(--head-turn, 0deg)); transition: transform .4s cubic-bezier(.2,.6,.3,1); }
+.cat-portrait { position: absolute; inset: 0; }
 .cat-window { position: absolute; inset: 0; overflow: hidden; }
 .cat-art { position: absolute; top: 0; left: 0; width: 200%; max-width: none; height: 100%; pointer-events: none; }
 .cat-slot-right .cat-art { left: -100%; }
@@ -48,7 +48,6 @@ button:disabled { cursor: default; }
 .cat-pair[data-motion="on"] .cat-slot[data-expression="normal"] .cat-art-normal { animation: cat-blink-open 9s 2s step-end infinite; }
 .cat-pair[data-motion="on"] .cat-slot-right[data-expression="normal"] .cat-art-content, .cat-pair[data-motion="on"] .cat-slot-right[data-expression="normal"] .cat-art-normal { animation-duration: 11s; animation-delay: 4s; }
 .cat-pair[data-motion="on"] .cat-slot[data-expression="content"] .cat-window { animation: cat-nuzzle .5s ease-out; }
-.cat-pair[data-motion="off"] .cat-portrait { transform: none; transition: none; }
 @keyframes cat-blink { 0%, 96%, 100% { opacity: 0; } 97%, 98% { opacity: 1; } }
 @keyframes cat-blink-open { 0%, 96%, 100% { opacity: 1; } 97%, 98% { opacity: 0; } }
 @keyframes cat-nuzzle { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-1.5px); } }

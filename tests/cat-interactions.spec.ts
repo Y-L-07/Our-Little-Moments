@@ -12,30 +12,45 @@ test("cat interactions start enabled without a separate animation switch", async
   await expect(page.getByRole("button", { name: "摸摸小灰", exact: true })).toBeVisible();
 });
 
-test("cats gently turn toward the pointer without moving the login card", async ({ page }) => {
+test("original eyes follow both pointer axes while heads and the login card stay still", async ({ page }) => {
   const portraits = page.getByTestId("cat-portrait");
+  const matrices = page.getByTestId("gaze-matrix");
   const card = page.getByTestId("login-card");
   await expect(page.getByTestId("cats")).toHaveAttribute("data-motion", "on");
+  await page.addStyleTag({ content: ".cat-art { animation: none !important; }" });
   const initialCard = await card.boundingBox();
+  const initialHeads = await portraits.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().toJSON()));
+  const gaze = () => matrices.evaluateAll(elements => elements.map(element => element.getAttribute("values")!.split(/\s+/).map(Number)));
+  const art = await page.locator(".cat-art-normal").first().boundingBox();
+  const eyeClip = { x: art!.x + 272 / 1536 * art!.width, y: art!.y + 484 / 1024 * art!.height, width: 80 / 1536 * art!.width, height: 100 / 1024 * art!.height };
   await page.mouse.move(2, 2);
-  await expect.poll(async () => portraits.first().evaluate((portrait) =>
-    new DOMMatrixReadOnly(getComputedStyle(portrait).transform).m41,
-  )).toBeLessThan(0);
+  await expect.poll(async () => (await gaze()).every(values => values[0] > .44 && values[5] > 0)).toBe(true);
+  const lookingLeft = await page.screenshot({ clip: eyeClip });
   const viewport = page.viewportSize()!;
   await page.mouse.move(viewport.width - 2, viewport.height - 2);
-  await expect.poll(async () => portraits.first().evaluate((portrait) =>
-    new DOMMatrixReadOnly(getComputedStyle(portrait).transform).m41,
-  )).toBeGreaterThan(0);
-  const poses = await portraits.evaluateAll((elements) => elements.map((portrait) => {
-    const matrix = new DOMMatrixReadOnly(getComputedStyle(portrait).transform);
-    return { x: matrix.m41, y: matrix.m42, angle: Math.atan2(matrix.m12, matrix.m11) * 180 / Math.PI };
-  }));
-  for (const { x, y, angle } of poses) {
-    expect(Math.abs(x)).toBeLessThanOrEqual(.81);
-    expect(Math.abs(y)).toBeLessThanOrEqual(.81);
-    expect(Math.abs(angle)).toBeLessThanOrEqual(.81);
+  await expect.poll(async () => (await gaze()).every(values => values[0] < -.44 && values[5] < -.29)).toBe(true);
+  const lookingRight = await page.screenshot({ clip: eyeClip });
+  expect(lookingRight.equals(lookingLeft)).toBe(false);
+  for (const values of await gaze()) {
+    expect(Math.abs(values[0])).toBeLessThanOrEqual(.45);
+    expect(Math.abs(values[5])).toBeLessThanOrEqual(.3);
   }
+  expect(await portraits.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().toJSON()))).toEqual(initialHeads);
   expect(await card.boundingBox()).toEqual(initialCard);
+  await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+  await expect.poll(async () => (await gaze()).every(values => values[0] === 0 && values[5] === 0)).toBe(true);
+  await page.mouse.move(2, 2);
+  await expect.poll(async () => (await gaze())[0][0]).toBeGreaterThan(0);
+  await page.evaluate(() => document.documentElement.dispatchEvent(new Event("pointerleave")));
+  await expect.poll(async () => (await gaze()).every(values => values[0] === 0 && values[5] === 0)).toBe(true);
+  await page.getByLabel(/^密码(?:\s|$)/).focus();
+  await page.mouse.move(viewport.width - 2, viewport.height - 2);
+  await expect(page.getByTestId("cats")).toHaveAttribute("data-state", "covering");
+  await expect.poll(async () => (await gaze()).every(values => values[0] === 0 && values[5] === 0)).toBe(true);
+  await expect(page.locator(".cat-art-normal").first()).toHaveCSS("opacity", "0");
+  await page.getByLabel(/^账号(?:\s|$)/).focus();
+  await page.mouse.move(2, 2);
+  await expect.poll(async () => (await gaze())[0][0]).toBeGreaterThan(0);
 });
 
 test("petting either cat changes only that cat and returns to its resting face", async ({ page }) => {
@@ -112,7 +127,7 @@ test("system reduced motion keeps petting usable and responds to live preference
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
   const cats = page.getByTestId("cats");
-  const portraits = page.getByTestId("cat-portrait");
+  const matrices = page.getByTestId("gaze-matrix");
   await expect(cats).toHaveAttribute("data-motion", "off");
   await page.getByRole("button", { name: "摸摸小橘", exact: true }).click();
   await expect(page.getByTestId("cat-left")).toHaveAttribute("data-expression", "content");
@@ -124,15 +139,15 @@ test("system reduced motion keeps petting usable and responds to live preference
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(cats).toHaveAttribute("data-motion", "on");
   await page.mouse.move(2, 2);
-  await expect.poll(async () => portraits.first().evaluate((portrait) =>
-    new DOMMatrixReadOnly(getComputedStyle(portrait).transform).m41,
-  )).toBeLessThan(0);
+  await expect.poll(async () => matrices.first().evaluate(matrix =>
+    Number(matrix.getAttribute("values")!.split(/\s+/)[0]),
+  )).toBeGreaterThan(0);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(cats).toHaveAttribute("data-motion", "off");
   await page.mouse.move(900, 650);
-  await expect.poll(async () => portraits.evaluateAll((elements) => elements.every((portrait) => {
-    const matrix = new DOMMatrixReadOnly(getComputedStyle(portrait).transform);
-    return Math.abs(matrix.m41) < .01 && Math.abs(matrix.m42) < .01 && Math.abs(matrix.m12) < .001;
+  await expect.poll(async () => matrices.evaluateAll((elements) => elements.every((matrix) => {
+    const values = matrix.getAttribute("values")!.split(/\s+/).map(Number);
+    return values[0] === 0 && values[5] === 0;
   }))).toBe(true);
   await page.getByLabel(/^密码(?:\s|$)/).fill("fictional-still-editable");
   await expect(cats).toHaveAttribute("data-state", "covering");
