@@ -5,6 +5,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("shows an honest prototype with labelled, autofill-friendly fields", async ({ page }) => {
+  await expect(page.getByRole("banner")).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "互动动画", exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Our Little Moments" })).toBeVisible();
   await expect(page.getByText("把平凡的日子，写成我们的故事。", { exact: true })).toBeVisible();
   await expect(page.getByText(/请勿输入真实账号和密码/)).toBeVisible();

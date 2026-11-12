@@ -14,8 +14,7 @@ function subscribeToReducedMotion(onChange: () => void) {
 export default function LoginForm() {
   const hydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
   const reducedMotion = useSyncExternalStore(subscribeToReducedMotion, getReducedMotion, () => true);
-  const [animationsOn, setAnimationsOn] = useState(true);
-  const motionEnabled = hydrated && animationsOn && !reducedMotion;
+  const motionEnabled = hydrated && !reducedMotion;
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ account: "", password: "" });
   const [message, setMessage] = useState("");
@@ -43,7 +42,7 @@ export default function LoginForm() {
 
   return (
     <section className="login-scene" aria-labelledby="welcome-title">
-      <div className="cat-stage"><CatPair state={catState} motionEnabled={motionEnabled} /></div>
+      <div className="cat-stage"><CatPair state={catState} motionEnabled={motionEnabled} ready={hydrated} /></div>
       <div className="card-underlay" aria-hidden="true" />
       <div className="login-card" data-testid="login-card">
         <div className="card-topline" aria-hidden="true"><span>OUR STORY STARTS HERE</span><span>01 / ∞</span></div>
@@ -87,11 +86,7 @@ export default function LoginForm() {
         <div className="prototype-notice" id="prototype-notice"><span className="notice-label">原型说明</span><p>当前为界面演示，没有真实登录或隐私保护。<br /><strong>请勿输入真实账号和密码。</strong></p></div>
       </div>
       <div className="scene-meta">
-        <p className="scene-caption">一页手账，和好多好多以后。</p>
-        <label className="motion-toggle">
-          <input type="checkbox" aria-label="互动动画" checked={motionEnabled} disabled={!hydrated || reducedMotion} onChange={event => setAnimationsOn(event.target.checked)} />
-          <span aria-hidden="true">互动动画</span>
-        </label>
+        <p className="scene-caption">点点小猫，收下一点点偏爱。</p>
       </div>
       {hydrated && reducedMotion && <p className="motion-note">已跟随系统“减少动态效果”设置</p>}
     </section>

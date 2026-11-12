@@ -3,15 +3,9 @@ import LoginForm from "@/components/login-form";
 export default function Home() {
   return (
     <div className="scrapbook-page">
-      <header className="page-header">
-        <a className="wordmark" href="#main" aria-label="Our Little Moments，前往登录表单">
-          <span className="brand-mark" aria-hidden="true">m.</span>
-          <span>OUR LITTLE MOMENTS</span>
-        </a>
-        <span className="edition-label"><span aria-hidden="true" /> 两个人的小日子</span>
-      </header>
-
       <main id="main" className="desk">
+        <div className="desk-paper desk-paper-grid" aria-hidden="true" />
+        <div className="desk-paper desk-paper-rose" aria-hidden="true" />
         <aside className="margin-note" aria-hidden="true">
           <span className="handwriting">Little things,<br />big love.</span>
           <svg className="note-arrow" viewBox="0 0 110 70" fill="none"><path d="M8 8c47-10 79 6 79 43m-13-12 14 14 9-18" /></svg>
@@ -35,6 +29,12 @@ export default function Home() {
           <span className="note-caption">NOTE TO US</span>
           <p>有你在，<br />平凡也闪闪发光。</p>
           <svg className="little-heart" viewBox="0 0 48 42" fill="none"><path d="M24 36C17 30 5 21 6 13 7 2 20 3 24 11c4-8 17-9 18 2 1 8-11 17-18 23Z" /></svg>
+        </div>
+
+        <div className="keepsake-stamp" aria-hidden="true">
+          <span>JUST US</span>
+          <svg viewBox="0 0 70 40" fill="none"><path d="M35 33C27 27 13 19 14 11c1-9 16-10 21 0 5-10 20-9 21 0 1 8-13 16-21 22Z" /><path d="M4 20h10m42 0h10M7 26h11m34 0h11" /></svg>
+          <span className="handwriting">with love</span>
         </div>
 
         <span className="desk-spark spark-one" aria-hidden="true">✧</span>
