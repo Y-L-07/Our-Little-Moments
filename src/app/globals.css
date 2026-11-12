@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f7f2e8;
+  --card: #fffcf6;
+  --ink: #49382e;
+  --muted: #796b5f;
+  --line: #ded4c6;
+  --brown: #795843;
+  --sage: #788575;
+  --rose: #ad7465;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: auto; color-scheme: light; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; }
+fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--sage); outline-offset: 4px; }
+button:disabled { cursor: default; }
+::selection { background: #e7cbbb; color: var(--ink); }
+.scrapbook-page { min-height: 100svh; overflow: hidden; background-image: radial-gradient(#806c4920 .55px, transparent .55px), radial-gradient(ellipse at 50% 42%, #fffcf6 0%, #fffcf600 67%); background-size: 6px 6px, 100% 100%; }
+.page-header { height: 72px; margin: 0 5.3%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #b9a99545; }
+.wordmark { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-family: Georgia, serif; font-size: 11px; letter-spacing: 2px; }
+.brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid #8c766252; border-radius: 50%; font-size: 24px; font-style: italic; line-height: 1; letter-spacing: -3px; padding-right: 3px; }
+.edition-label { display: flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 2px; color: var(--muted); }
+.edition-label > span { width: 6px; height: 6px; background: #96a18c; border-radius: 50%; }
+.desk { position: relative; min-height: calc(100svh - 132px); display: grid; place-items: center; padding: 110px 24px 24px; }
+.login-scene { position: relative; width: 448px; isolation: isolate; }
+.cat-stage { position: absolute; width: 290px; height: 194px; top: -148px; left: 50%; transform: translateX(-50%); z-index: 3; pointer-events: none; }
+.cat-pair { position: relative; width: 100%; aspect-ratio: 3 / 2; }
+.cat-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cat-art-covered { opacity: 0; }
+.cat-pair[data-state="covering"] .cat-art:first-child { opacity: 0; }
+.cat-pair[data-state="covering"] .cat-art-covered { opacity: 1; }
+.card-underlay { position: absolute; inset: 7px -6px 34px 5px; border: 1px solid #d7cbbd; border-radius: 16px; transform: rotate(-1.5deg); background: #f1e8d9; z-index: -1; }
+.login-card { position: relative; padding: 26px 42px 22px; border: 1px solid #d9cdbd; border-radius: 17px; background: var(--card); box-shadow: 0 10px 35px #6f503311, 0 2px 3px #6f503309; }
+.card-topline { display: flex; justify-content: space-between; font-family: Georgia, serif; font-size: 8px; letter-spacing: 1.5px; color: #8c7b68; }
+.welcome-copy { text-align: center; padding: 18px 0 22px; }
+.welcome-eyebrow { display: block; font-size: 11px; letter-spacing: 3px; color: var(--muted); }
+h1 { position: relative; display: inline-block; margin: 9px 0 10px; font-family: Georgia, "Times New Roman", serif; font-size: 42px; font-weight: 400; letter-spacing: -1.5px; line-height: 1.01; }
+h1 em { font-weight: 400; }
+.title-heart { position: absolute; right: -27px; bottom: 2px; font-family: Georgia, serif; color: var(--rose); font-size: 25px; transform: rotate(14deg); }
+.welcome-copy p { margin: 0; font-size: 13px; letter-spacing: 1px; color: var(--muted); }
+.field { margin-bottom: 17px; }
+.field label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
+.field label span { color: #928272; font-family: Georgia, serif; font-size: 8px; font-weight: 400; letter-spacing: 1.5px; }
+.password-field { position: relative; }
+.password-field > .text-button { position: absolute; right: 0; top: -1px; }
+.input-wrap { position: relative; display: flex; align-items: center; min-height: 49px; background: #faf6ef; border: 1px solid #dfd4c6; border-radius: 8px; transition: border-color .18s, box-shadow .18s; }
+.input-wrap:focus-within { border-color: var(--sage); box-shadow: 0 0 0 3px #78857522; }
+.input-wrap:has(input:focus-visible) { outline: 2px solid var(--sage); outline-offset: 2px; }
+.input-wrap input:focus-visible { outline: none; }
+.input-wrap:has([aria-invalid="true"]) { border-color: #b76b55; }
+.input-wrap > svg { flex-shrink: 0; width: 17px; height: 17px; margin-left: 14px; color: #9b8a76; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.input-wrap input { width: 100%; min-width: 0; height: 47px; padding: 0 12px; border: none; outline-offset: -3px; background: transparent; border-radius: 7px; color: var(--ink); font-size: 14px; }
+.input-wrap input::placeholder { color: var(--muted); font-size: 13px; }
+.text-button { padding: 4px 0; margin-top: -4px; border: 0; background: none; color: #7b6452; font-size: 12px; text-underline-offset: 4px; }
+.text-button:hover { color: var(--ink); text-decoration: underline; }
+.password-toggle { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 6px; background: transparent; color: #95816b; }
+.password-toggle:hover { color: var(--ink); background: #eee6d9; }
+.password-toggle svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+.field-error { margin: 6px 0 0; color: #a24631; font-size: 12px; }
+.login-button { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; min-height: 49px; margin-top: 23px; border: 1px solid #674a38; border-radius: 8px; color: #fffbf5; background: var(--brown); font-size: 13px; letter-spacing: 2px; box-shadow: 0 3px 0 #5e44301a; transition: background .18s, box-shadow .18s; }
+.login-button:hover { background: #654832; box-shadow: 0 3px 9px #5e443026; }
+.login-button:active { background: #553b2b; }
+.login-button svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.feedback { margin: 0; color: #596749; font-size: 12px; line-height: 1.8; }
+.feedback:not(:empty) { margin-top: 12px; padding: 10px 12px; border: 1px solid #d7dece; background: #f0f3eb; border-radius: 6px; }
+.space-note { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 12px 0 12px; color: var(--muted); font-size: 11px; letter-spacing: .25px; }
+.space-note > span { color: #aa8070; font-size: 16px; }
+.prototype-notice { display: flex; gap: 9px; padding-top: 10px; border-top: 1px dashed #d7cbbb; align-items: baseline; }
+.notice-label { flex-shrink: 0; padding: 2px 5px; border: 1px solid #d8c6af; border-radius: 3px; color: #876950; font-size: 9px; }
+.prototype-notice p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.9; }
+.prototype-notice strong { color: #75563e; font-weight: 500; }
+.scene-caption { margin: 20px 0 0; text-align: center; font-size: 10px; letter-spacing: 2px; color: #978674; }
+.handwriting { font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive; font-weight: 400; }
+.margin-note { position: absolute; left: calc(50% - 430px); top: 76px; transform: rotate(-9deg); color: #a18c74; }
+.margin-note .handwriting { font-size: 28px; line-height: 1.45; }
+.note-arrow { width: 92px; height: 62px; margin-top: 8px; margin-left: 35px; stroke: #b19a7e; stroke-width: 1.2; stroke-linecap: round; }
+.keepsake { position: absolute; box-shadow: 0 4px 12px #7860440e; }
+.keepsake-left { width: 170px; padding: 12px 12px 16px; left: calc(50% - 465px); top: 355px; transform: rotate(-10deg); background: #fffaf0; border: 1px solid #e0d7c9; text-align: center; }
+.botanical-print { background: #e4e7db; height: 172px; display: grid; place-items: center; }
+.botanical-print svg { width: 122px; height: 150px; }
+.stem { stroke: #79886a; stroke-width: 1.5; stroke-linecap: round; }
+.leaf { fill: #9aa58a; opacity: .85; }
+.keepsake-left .handwriting { display: inline-block; margin-top: 10px; color: #7e816a; font-size: 14px; }
+.paper-tape { position: absolute; width: 72px; height: 25px; left: 50%; top: -12px; transform: translateX(-50%) rotate(-5deg); background: #d5c09b88; border-left: 1px dashed #c5b391; border-right: 1px dashed #c5b391; }
+.keepsake-right { width: 191px; min-height: 189px; right: calc(50% - 475px); top: 245px; padding: 28px 19px 15px; background: #f2e7d0; transform: rotate(8deg); background-image: repeating-linear-gradient(transparent 0 25px, #ac947514 25px 26px); border: 1px solid #e9dbc0; }
+.keepsake-right .paper-tape { background: #c6cbb280; transform: translateX(-50%) rotate(5deg); }
+.note-caption { color: #9b8268; font-family: Georgia, serif; font-size: 9px; letter-spacing: 2px; }
+.keepsake-right p { margin: 21px 0 0; color: #8d725b; font-size: 13px; line-height: 2.1; letter-spacing: 1px; }
+.little-heart { height: 30px; width: 36px; margin: 12px 0 0 98px; stroke: #b78d75; stroke-width: 1.5; }
+.desk-spark { position: absolute; font-size: 32px; color: #b4a17e; }
+.spark-one { top: 152px; left: calc(50% + 335px); transform: rotate(10deg); }
+.spark-two { bottom: 86px; right: calc(50% + 290px); font-size: 24px; }
+.page-footer { display: flex; align-items: center; justify-content: center; gap: 17px; min-height: 60px; color: #978875; font-size: 10px; letter-spacing: 1.5px; }
+.footer-line { height: 1px; width: 32px; background: #c7bba7; }
+.page-footer .handwriting { font-size: 13px; letter-spacing: 0; }
+@media (max-width: 1100px) { .keepsake, .margin-note, .desk-spark { display: none; } }
+@media (min-width: 1000px) and (max-height: 820px) {
+  .page-header { height: 60px; }
+  .desk { min-height: calc(100svh - 104px); padding-top: 94px; padding-bottom: 16px; }
+  .cat-stage { width: 250px; height: 167px; top: -126px; }
+  .welcome-copy { padding: 12px 0 18px; }
+  h1 { font-size: 36px; margin: 8px 0; }
+  .field { margin-bottom: 14px; }
+  .login-card { padding-top: 22px; padding-bottom: 18px; }
+  .login-button { margin-top: 18px; }
+  .page-footer { min-height: 44px; }
+  .margin-note { top: 65px; }
+  .keepsake-left { top: 310px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
