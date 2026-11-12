@@ -67,3 +67,30 @@ Invariants: preserve the same two original characters, head silhouettes, ear out
 Scene/backdrop: preserve actual alpha transparency including the gap between cats. No solid background, paper, visible ledge, card, checkerboard, glow, drop shadow, text, logo, watermark or decorative props.
 Output: one transparent PNG image matching the input framing and dimensions. A finished consistent alternate expression state, not a sprite sheet or comparison panel.
 ```
+
+## 点击互动素材（2026-11-12）
+
+新增 `cats-content.png`，用于被摸头后的眯眼回应。使用内置 image_gen 工具以正常态为参考编辑，再进行一次背景提取，清除首版残留的半透明底色。最终版本保存到本目录和 `public/images/cats/`，原有两张图片未覆盖。
+
+已检查 1536×1024 尺寸、四角和中间空隙 alpha 为 0，猫咪主体可见；SHA-256：`A8DD77757E186D4D739864830EC613A2A61702BFCE0D8D08DAE1BDAD1F3708ED`。仍是完整双猫状态图，不是可编辑图层。
+
+生成提示词：
+
+```text
+Use case: precise-object-edit.
+Asset type: PETTED / CONTENTED CLOSED-EYE alternate state for two scrapbook login mascots.
+Input image 1: EDIT TARGET, the existing original two-cat PNG.
+Primary request: Change ONLY the eyes of both cats from open oval eyes to relaxed, gently curved closed smiling eyes, as if enjoying a soft pet on the forehead. Add only a very subtle warmer blush on the existing cheek areas. Keep the same closed-mouth smile. The expression is peaceful and affectionate, not laughing, not squinting angrily.
+Invariants: Keep EXACT canvas dimensions 1536x1024, transparent margins, exact pixel placement and size of both cats, upright head silhouettes, ears, all forehead stripes/patches, noses, mouths, whiskers, shoulder outlines, and BOTH resting front paws of each cat. Do not move, resize, tilt, change outline thickness, alter colors or change body pose. The left apricot tabby and right warm ivory/gray-taupe cat stay separate in their original places with the same central gap. Preserve warm-brown colored-pencil outline and matte softly grainy gouache texture. This image needs to register with the original for UI state switching.
+Background: preserve genuine alpha transparency, no paper background or fake checkerboard.
+Avoid: extra hearts, sparkles, hands, props, captions, watermark, new accessories, new paws, open mouth, exaggerated expression, changes to face proportions. No contact sheet.
+Output: ONE transparent PNG of the existing pair, with only the two cats' eyes closed in contentment and barely enhanced blush.
+```
+
+透明背景修正提示词：
+
+```text
+Use case: background-extraction.
+Input image 1 is the edit target, the contented closed-eye orange and ivory-gray cat pair.
+Remove ONLY the residual background around the two cats. Preserve their exact size, position, canvas 1536x1024, colors, texture, outlines, facial expressions and paws. The empty canvas surrounding the cats, the gap between the cats, and all four corners must have EXACTLY ZERO alpha, not a faint translucent white or brown wash. No glow or cast shadow remains outside their silhouettes. Keep the clean thin pencil outline and fine fur edges with antialiasing. Do not redraw or restyle the cats. Output a clean genuinely transparent PNG cutout, no opaque or semi-opaque rectangular background, no visible checkerboard.
+```
