@@ -33,6 +33,7 @@ test("required errors identify fields and focus the first missing value", async 
 test("keyboard users can reach fields and toggle visibility without blocking paste", async ({ page }) => {
   const account = page.getByLabel(/^账号(?:\s|$)/);
   const password = page.getByLabel(/^密码(?:\s|$)/);
+  await expect(account).toBeEnabled();
   await account.focus();
   await page.keyboard.press("Tab");
   await expect(password).toBeFocused();
@@ -63,6 +64,7 @@ test("cats cover their eyes for password focus and recover on blur", async ({ pa
   const cats = page.getByTestId("cats");
   const account = page.getByLabel(/^账号(?:\s|$)/);
   const password = page.getByLabel(/^密码(?:\s|$)/);
+  await expect(account).toBeEnabled();
   await account.focus();
   await expect(cats).toHaveAttribute("data-state", "watching");
   await password.focus();
@@ -124,7 +126,8 @@ test("desktop layouts keep the card and controls usable without horizontal overf
     await expect(page.getByTestId("login-card")).toBeVisible();
     await expect(page.getByLabel(/^账号(?:\s|$)/)).toBeVisible();
     await expect(page.getByLabel(/^密码(?:\s|$)/)).toBeVisible();
-    await expect(page.getByRole("button", { name: "进入我们的小屋" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "进入我们的小屋" })).toBeInViewport({ ratio: 1 });
+    await expect(page.locator("#prototype-notice")).toBeInViewport({ ratio: 1 });
     const card = (await page.getByTestId("login-card").boundingBox())!;
     expect(card.x).toBeGreaterThanOrEqual(0);
     expect(card.x + card.width).toBeLessThanOrEqual(width);

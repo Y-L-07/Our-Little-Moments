@@ -61,3 +61,26 @@ test("system reduced motion disables animation on load and still allows the demo
   await expect(page.getByText(/演示完成/)).toBeVisible();
   await expect(page.getByText(/未进行真实登录/)).toBeVisible();
 });
+
+test("live system preferences restore motion only while the user has not turned it off", async ({ page }) => {
+  const cats = page.getByTestId("cats");
+  const motionSwitch = page.getByRole("checkbox", { name: "互动动画", exact: true });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(cats).toHaveAttribute("data-motion", "on");
+  await expect(motionSwitch).toBeChecked();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(cats).toHaveAttribute("data-motion", "off");
+  await expect(motionSwitch).not.toBeChecked();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(cats).toHaveAttribute("data-motion", "on");
+  await expect(motionSwitch).toBeChecked();
+  await motionSwitch.uncheck();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(cats).toHaveAttribute("data-motion", "off");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(cats).toHaveAttribute("data-motion", "off");
+  await expect(motionSwitch).not.toBeChecked();
+  await page.getByLabel(/^密码(?:\s|$)/).fill("fictional-still-editable");
+  await expect(cats).toHaveAttribute("data-state", "covering");
+  await expect(page.getByLabel(/^密码(?:\s|$)/)).toHaveValue("fictional-still-editable");
+});
