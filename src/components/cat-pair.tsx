@@ -11,11 +11,7 @@ const cats = [
 ];
 
 // shortcut: eye coordinates match the current artwork; recalibrate when replacing it.
-const eyeMap = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024"><defs><radialGradient id="eye"><stop offset="60%" stop-color="white"/><stop offset="100%" stop-color="black"/></radialGradient></defs><rect width="1536" height="1024" fill="black"/>${[[312, 534], [544, 531], [994, 535], [1227, 532]].map(([cx, cy]) => `<circle cx="${cx}" cy="${cy}" r="78" fill="url(#eye)"/>`).join("")}</svg>`)}`;
-
-function gazeMatrix(x: number, y: number) {
-  return `${-x * .45} 0 0 0 .5 ${-y * .3} 0 0 0 .5 0 0 0 0 .5 0 0 0 0 1`;
-}
+const eyePositions = [[312, 534], [544, 531], [994, 535], [1227, 532]];
 
 export default function CatPair({ state, motionEnabled, ready }: {
   state: CatState;
@@ -31,7 +27,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
   useEffect(() => {
     const faces = Array.from(catsRef.current?.querySelectorAll<HTMLElement>(".cat-portrait") ?? []).map(portrait => ({
       portrait,
-      matrix: portrait.querySelector("feColorMatrix"),
+      pupils: portrait.querySelectorAll<SVGGElement>(".cat-pupil"),
       x: 0, y: 0, targetX: 0, targetY: 0,
     }));
     let frame = 0;
@@ -45,7 +41,9 @@ export default function CatPair({ state, motionEnabled, ready }: {
           face.x = face.targetX;
           face.y = face.targetY;
         } else moving = true;
-        face.matrix?.setAttribute("values", gazeMatrix(face.x, face.y));
+        face.pupils.forEach(pupil => {
+          pupil.style.transform = `translate(${face.x * 4}px, ${face.y * 3}px)`;
+        });
       });
       frame = moving ? requestAnimationFrame(animateGaze) : 0;
     }
@@ -55,7 +53,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
       frame = 0;
       faces.forEach(face => {
         face.x = face.y = face.targetX = face.targetY = 0;
-        face.matrix?.setAttribute("values", gazeMatrix(0, 0));
+        face.pupils.forEach(pupil => pupil.style.removeProperty("transform"));
       });
     }
 
@@ -76,12 +74,17 @@ export default function CatPair({ state, motionEnabled, ready }: {
       if (!frame) frame = requestAnimationFrame(animateGaze);
     }
 
+    function returnGaze() {
+      faces.forEach(face => { face.targetX = face.targetY = 0; });
+      if (!frame) frame = requestAnimationFrame(animateGaze);
+    }
+
     document.addEventListener("pointermove", followPointer, { passive: true });
-    document.documentElement.addEventListener("pointerleave", resetGaze);
+    document.documentElement.addEventListener("pointerleave", returnGaze);
     window.addEventListener("blur", resetGaze);
     return () => {
       document.removeEventListener("pointermove", followPointer);
-      document.documentElement.removeEventListener("pointerleave", resetGaze);
+      document.documentElement.removeEventListener("pointerleave", returnGaze);
       window.removeEventListener("blur", resetGaze);
       resetGaze();
     };
@@ -104,13 +107,22 @@ export default function CatPair({ state, motionEnabled, ready }: {
               <div className="cat-window">
                 <svg className="cat-art cat-art-normal" viewBox="0 0 1536 1024">
                   <defs>
-                    <filter id={`gaze-${cat.side}`} x="0" y="0" width="1536" height="1024" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                      <feImage href={eyeMap} x="0" y="0" width="1536" height="1024" preserveAspectRatio="none" result="eye-map" />
-                      <feColorMatrix in="eye-map" type="matrix" values={gazeMatrix(0, 0)} result="gaze-map" data-testid="gaze-matrix" />
-                      <feDisplacementMap in="SourceGraphic" in2="gaze-map" scale="16" xChannelSelector="R" yChannelSelector="G" />
-                    </filter>
+                    <radialGradient id={`iris-${cat.side}`}>
+                      <stop offset="0" stopColor="#ad8353" />
+                      <stop offset=".65" stopColor="#ad8353" stopOpacity=".7" />
+                      <stop offset="1" stopColor="#ad8353" stopOpacity="0" />
+                    </radialGradient>
+                    <clipPath id={`eye-clip-${cat.side}`}><ellipse rx="15" ry="25" /></clipPath>
                   </defs>
-                  <image href="/images/cats/cats-peeking.png" width="1536" height="1024" filter={`url(#gaze-${cat.side})`} />
+                  <image href="/images/cats/cats-peeking.png" width="1536" height="1024" />
+                  {eyePositions.slice(index * 2, index * 2 + 2).map(([x, y]) => (
+                    <g key={x} transform={`translate(${x} ${y})`} data-testid="cat-eye">
+                      <ellipse rx="15" ry="25" fill={`url(#iris-${cat.side})`} opacity=".8" />
+                      <g clipPath={`url(#eye-clip-${cat.side})`}>
+                        <g className="cat-pupil" data-testid="cat-pupil"><ellipse rx="10" ry="21" fill="#59381f" /></g>
+                      </g>
+                    </g>
+                  ))}
                 </svg>
                 <Image className="cat-art cat-art-content" src="/images/cats/cats-content.png" alt="" width={1536} height={1024} unoptimized />
                 <Image className="cat-art cat-art-covered" src="/images/cats/cats-covering-eyes.png" alt="" width={1536} height={1024} unoptimized />
