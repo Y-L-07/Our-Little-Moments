@@ -1,75 +1,42 @@
-import Image from "next/image";
 import LoginForm from "@/components/login-form";
+
+const stars = [[8, 13], [18, 8], [29, 22], [39, 9], [62, 11], [75, 6], [89, 17], [95, 35], [5, 43], [14, 62], [27, 72], [8, 86], [36, 89], [66, 87], [79, 75], [92, 88], [85, 53], [70, 32], [20, 43], [93, 64], [47, 6], [55, 93]];
 
 export default function Home() {
   return (
-    <div className="scrapbook-page">
-      <main id="main" className="desk">
-        <div className="desk-paper desk-paper-grid" aria-hidden="true" />
-        <div className="desk-paper desk-paper-rose" aria-hidden="true" />
-        <aside className="margin-note" aria-hidden="true">
-          <span className="handwriting">Little things,<br />big love.</span>
-          <svg className="note-arrow" viewBox="0 0 110 70" fill="none"><path d="M8 8c47-10 79 6 79 43m-13-12 14 14 9-18" /></svg>
+    <div className="moonlight-page">
+      <div className="night-sky" aria-hidden="true">
+        {stars.map(([x, y], index) => <span key={index} className={index % 5 === 0 ? "star star-bright" : "star"} style={{ left: x + "%", top: y + "%" }} />)}
+      </div>
+      <main id="main" className="night-room">
+        <aside className="moon-note" aria-hidden="true">
+          <div className="crescent-moon" />
+          <span className="night-caption">UNDER THE SAME MOON</span>
+          <p>今晚的月色，<br />也想分你一半。</p>
+          <span className="night-note-rule" />
+          <span className="night-whisper">每个平凡的夜晚，都因你闪光。</span>
         </aside>
-
-        <div className="desk-detail daily-note" aria-hidden="true">
-          <span className="paper-clip" />
-          <span className="note-caption">LITTLE JOYS</span>
-          <p>今天的小幸福</p>
-          <span className="joy-line">一起吃早餐</span>
-          <span className="joy-line">散步时牵手</span>
-          <span className="joy-line">分享一件小事</span>
-        </div>
-
-        <div className="desk-detail morning-photo" aria-hidden="true">
-          <span className="paper-tape" />
-          <Image src="/images/scrapbook/slow-morning.png" alt="" width={1536} height={1024} sizes="144px" />
-          <span className="handwriting">a slow morning, with you.</span>
-        </div>
-
-        <div className="keepsake keepsake-left" aria-hidden="true">
-          <span className="paper-tape" />
-          <div className="botanical-print">
-            <svg viewBox="0 0 150 170" fill="none">
-              <path className="stem" d="M69 153c6-36-1-72 14-119M76 101 48 77m29 3 31-28M73 124l31-20" />
-              <path className="leaf" d="M77 78C53 77 46 55 51 45c23 3 30 19 26 33Zm4-22c-9-19-2-35 10-39 10 18 3 32-10 39ZM76 103c16-27 34-26 42-20-6 22-23 27-42 20Zm-4 24c-27-1-36-19-33-29 23-4 36 11 33 29Z" />
-            </svg>
-          </div>
-          <span className="handwriting">grow together.</span>
-        </div>
-
+        <svg className="constellation constellation-left" viewBox="0 0 220 150" fill="none" aria-hidden="true">
+          <path d="m12 112 55-59 47 29 44-63 49 43" />
+          <circle cx="12" cy="112" r="2" /><circle cx="67" cy="53" r="3" /><circle cx="114" cy="82" r="2" /><circle cx="158" cy="19" r="3" /><circle cx="207" cy="62" r="2" />
+        </svg>
         <LoginForm />
-
-        <div className="keepsake keepsake-right" aria-hidden="true">
-          <span className="paper-tape" />
-          <span className="note-caption">NOTE TO US</span>
-          <p>有你在，<br />平凡也闪闪发光。</p>
-          <svg className="little-heart" viewBox="0 0 48 42" fill="none"><path d="M24 36C17 30 5 21 6 13 7 2 20 3 24 11c4-8 17-9 18 2 1 8-11 17-18 23Z" /></svg>
-        </div>
-
-        <div className="keepsake-stamp" aria-hidden="true">
-          <span>JUST US</span>
-          <svg viewBox="0 0 70 40" fill="none"><path d="M35 33C27 27 13 19 14 11c1-9 16-10 21 0 5-10 20-9 21 0 1 8-13 16-21 22Z" /><path d="M4 20h10m42 0h10M7 26h11m34 0h11" /></svg>
-          <span className="handwriting">with love</span>
-        </div>
-
-        <div className="desk-detail together-ticket" aria-hidden="true">
-          <div><span className="note-caption">FOR THE TWO OF US</span><p>一起，慢慢走。</p></div>
-          <span className="ticket-stub">02<span>ADMIT TWO</span></span>
-        </div>
-        <span className="desk-detail tiny-label" aria-hidden="true">把日子过成喜欢的样子</span>
-        <div className="desk-detail round-sticker" aria-hidden="true"><span>made of</span><span className="handwriting">little things</span><span>♡</span></div>
-        <svg className="desk-detail thread-left" viewBox="0 0 100 180" fill="none" aria-hidden="true"><path d="M68 5C-7 39 19 93 58 99c47 8 22-44-5-17-29 30-10 62-28 91" /></svg>
-        <svg className="desk-detail thread-right" viewBox="0 0 250 85" fill="none" aria-hidden="true"><path d="M5 33c44-45 95 57 151 22 26-16-14-41-22-17-8 27 56 28 108-23" /></svg>
-
-        <span className="desk-spark spark-one" aria-hidden="true">✧</span>
-        <span className="desk-spark spark-two" aria-hidden="true">✧</span>
+        <aside className="night-letter" aria-hidden="true">
+          <span className="letter-star">✧</span>
+          <span className="night-caption">A LITTLE LIGHT, JUST FOR US</span>
+          <p>把今天的温柔，<br />留给明天的我们。</p>
+          <span className="handwriting">You, me &amp; the moon.</span>
+          <div className="moon-phases"><i /><i /><i /><i /><i /></div>
+        </aside>
+        <svg className="constellation constellation-right" viewBox="0 0 220 150" fill="none" aria-hidden="true">
+          <path d="m14 30 58 24 40 68 54-53 38 17" />
+          <circle cx="14" cy="30" r="2" /><circle cx="72" cy="54" r="3" /><circle cx="112" cy="122" r="2" /><circle cx="166" cy="69" r="3" /><circle cx="204" cy="86" r="2" />
+        </svg>
       </main>
-
       <footer className="page-footer">
-        <span>慢慢记录，好好相爱。</span>
+        <span>月光作伴，慢慢相爱。</span>
         <span className="footer-line" aria-hidden="true" />
-        <span className="handwriting">Every day, a little closer.</span>
+        <span className="handwriting">Every night, a little closer.</span>
       </footer>
     </div>
   );
