@@ -1,6 +1,30 @@
 import { expect, test } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
+test("a wish typed before the page becomes interactive can still be saved", async ({ page }) => {
+  let releaseScripts!: () => void;
+  const gate = new Promise<void>(resolve => { releaseScripts = resolve; });
+  await page.route(/\/_next\/.*\.js(?:\?|$)/, async route => {
+    await gate;
+    await route.continue();
+  });
+  await page.goto("/wishes", { waitUntil: "commit" });
+  const title = "慢慢写下的愿望 · " + randomUUID();
+  const input = page.getByLabel("新愿望");
+  const add = page.getByRole("button", { name: "添加愿望" });
+  try {
+    await input.fill(title);
+    await expect(add).toBeDisabled();
+  } finally {
+    releaseScripts();
+  }
+  await expect(add).toBeEnabled();
+  await expect(input).toHaveValue(title);
+  await add.click();
+  await expect(page.getByRole("checkbox", { name: title })).toBeVisible();
+  await expect(input).toBeEmpty();
+});
+
 test("visitors add wishes and can check or uncheck them across browsers", async ({ page, browser, baseURL }) => {
   await page.goto("/wishes");
   const title = "一起去海边 · " + randomUUID();

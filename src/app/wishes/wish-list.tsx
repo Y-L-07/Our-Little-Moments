@@ -6,14 +6,18 @@ import styles from "@/app/collections.module.css";
 
 export default function WishList({ initialWishes }: { initialWishes: Wish[] }) {
   const [wishes, setWishes] = useState(initialWishes);
-  const [title, setTitle] = useState("");
+  const [hasTitle, setHasTitle] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [ready, setReady] = useState(false);
   const newId = useRef<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
-  useEffect(() => setReady(true), []);
+  useEffect(() => {
+    // The server-rendered field may already contain a wish when React connects.
+    setHasTitle(Boolean(input.current?.value.trim()));
+    setReady(true);
+  }, []);
 
   async function save(wish: { id: string; title: string } | { id: string; done: boolean }) {
     if (pending) return;
@@ -37,7 +41,8 @@ export default function WishList({ initialWishes }: { initialWishes: Wish[] }) {
         ? current.map(item => item.id === saved.id ? saved : item)
         : [saved, ...current]);
       if (adding) {
-        setTitle("");
+        if (input.current) input.current.value = "";
+        setHasTitle(false);
         newId.current = null;
         setNotice("愿望已添加。");
       } else {
@@ -56,9 +61,10 @@ export default function WishList({ initialWishes }: { initialWishes: Wish[] }) {
 
   function add(event: FormEvent) {
     event.preventDefault();
-    if (pending || !title.trim()) return;
+    const title = input.current?.value.trim();
+    if (pending || !title) return;
     newId.current ??= crypto.randomUUID();
-    void save({ id: newId.current, title: title.trim() });
+    void save({ id: newId.current, title });
   }
 
   return (
@@ -66,10 +72,10 @@ export default function WishList({ initialWishes }: { initialWishes: Wish[] }) {
       <form onSubmit={add} className={styles.form + " " + styles.wishForm}>
         <div className={styles.field}>
           <label htmlFor="wish-title">新愿望</label>
-          <input id="wish-title" ref={input} value={title} maxLength={120} required readOnly={pending}
-            placeholder="比如，一起去海边看日出" onChange={event => { setTitle(event.target.value); newId.current = null; setError(""); }} />
+          <input id="wish-title" ref={input} maxLength={120} required readOnly={pending}
+            placeholder="比如，一起去海边看日出" onChange={event => { setHasTitle(Boolean(event.currentTarget.value.trim())); newId.current = null; setError(""); }} />
         </div>
-        <button type="submit" className={styles.primary} disabled={!ready || pending || !title.trim()}>添加愿望</button>
+        <button type="submit" className={styles.primary} disabled={!ready || pending || !hasTitle}>添加愿望</button>
       </form>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       <p role="status" className={styles.status}>{notice}</p>
