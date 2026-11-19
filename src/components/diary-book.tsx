@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { DiaryEntry as Entry, DiarySummary as Summary } from "@/lib/diary";
+import { MAX_PHOTOS } from "@/lib/photo-limits";
+import { PhotoGallery, PhotoPicker, type DraftPhoto } from "./diary-photos";
 import styles from "./diary-book.module.css";
 
-type Draft = Summary & { text: string; version?: number };
+type Draft = Summary & { text: string; photos: DraftPhoto[]; version?: number };
 
 function today() {
   const date = new Date();
@@ -26,9 +28,11 @@ export default function DiaryBook() {
   const lastSelection = useRef<string | undefined>(undefined);
   const writeButton = useRef<HTMLButtonElement>(null);
   const editButton = useRef<HTMLButtonElement>(null);
-  const dirty = draft !== null && (draft.version === undefined
+  const savedPhotos = draft && draft.id === entry?.id ? entry.photos : [];
+  const photoChanges = draft !== null && draft.photos.map(photo => photo.id).join(",") !== savedPhotos.join(",");
+  const dirty = draft !== null && (photoChanges || (draft.version === undefined
     ? Boolean(draft.title || draft.text)
-    : draft.title !== entry?.title || draft.text !== entry.text || draft.date !== entry.date);
+    : draft.title !== entry?.title || draft.text !== entry.text || draft.date !== entry.date));
 
   async function load(date: string, id?: string, saved?: Entry) {
     reader.current?.abort();
@@ -88,7 +92,9 @@ export default function DiaryBook() {
     setError("");
     setNotice("");
     setConflict(null);
-    setDraft(existing ?? { id: crypto.randomUUID(), date: filter || today(), title: "", text: "" });
+    setDraft(existing
+      ? { ...existing, photos: existing.photos.map(id => ({ id })) }
+      : { id: crypto.randomUUID(), date: filter || today(), title: "", text: "", photos: [] });
   }
 
   async function cancel() {
@@ -113,20 +119,39 @@ export default function DiaryBook() {
       setError("请填写标题和正文后再保存。");
       return;
     }
+    if (draft.photos.length > MAX_PHOTOS) {
+      setError(`合并后有 ${draft.photos.length} 张照片，请选留至多 ${MAX_PHOTOS} 张再保存。`);
+      return;
+    }
     setSaving(true);
     setError("");
     try {
+      const { photos, ...fields } = draft;
+      let body: string | FormData = JSON.stringify(fields);
+      if (photoChanges) {
+        body = new FormData();
+        body.set("entry", JSON.stringify({ ...fields, photos: photos.map(photo => photo.id) }));
+        for (const photo of photos) {
+          if (photo.file) body.set("photo:" + photo.id, photo.file);
+        }
+      }
       const response = await fetch("/api/diary", {
         method: draft.version === undefined ? "POST" : "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(draft),
+        headers: typeof body === "string" ? { "Content-Type": "application/json" } : undefined,
+        body,
       });
       const result = await response.json();
       if (response.status === 409 && result.current) {
-        setEntry(result.current);
-        setConflict(result.current);
-        setDraft({ ...draft, version: result.current.version });
-        setError("其他访客已保存新版本，请对照最新内容修改草稿，再保存。");
+        const latest: Entry = result.current;
+        // Keep independent additions, and honor removals made on either copy.
+        const retained = latest.photos.filter(id => !savedPhotos.includes(id) || photos.some(photo => photo.id === id));
+        const added = photos.filter(photo => photo.file && !latest.photos.includes(photo.id));
+        setEntry(latest);
+        setConflict(latest);
+        setDraft({ ...draft, version: latest.version, photos: [...retained.map(id => ({ id })), ...added] });
+        setError(savedPhotos.join(",") === latest.photos.join(",")
+          ? "其他访客已保存新版本，请对照最新内容修改草稿，再保存。"
+          : "其他访客也改了照片。草稿保留了双方新加的照片，也同步了移除操作。请核对后再保存。");
         return;
       }
       if (!response.ok) {
@@ -193,11 +218,13 @@ export default function DiaryBook() {
                 <input id="diary-entry-title" autoFocus required maxLength={80} value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} />
                 <label htmlFor="diary-text">正文</label>
                 <textarea id="diary-text" rows={6} required maxLength={5000} value={draft.text} onChange={event => setDraft({ ...draft, text: event.target.value })} />
+                <PhotoPicker photos={draft.photos} onChange={photos => { setError(""); setDraft({ ...draft, photos }); }} />
                 {conflict && <section aria-label="最新保存的版本" className={styles.conflict}>
                   <h3>最新保存的版本</h3>
                   <time dateTime={conflict.date}>{conflict.date}</time>
                   <strong>{conflict.title}</strong>
                   <p>{conflict.text}</p>
+                  <PhotoGallery photos={conflict.photos} />
                 </section>}
                 <div className={styles.actions}>
                   <button type="button" className={styles.secondary} onClick={cancel}>取消</button>
@@ -210,6 +237,7 @@ export default function DiaryBook() {
               <time className={styles.dateline} dateTime={entry.date}>{entry.date}</time>
               <h2 className={styles.entryTitle}>{entry.title}</h2>
               <p className={styles.body}>{entry.text}</p>
+              <PhotoGallery photos={entry.photos} />
               <button ref={editButton} type="button" className={styles.secondary} disabled={loading} onClick={() => startDraft(entry)}>编辑日记</button>
             </>
           ) : loading ? <p className={styles.muted} role="status">正在读取日记…</p>

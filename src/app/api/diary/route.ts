@@ -1,6 +1,5 @@
-import { createEntry, listEntries, readEntry, updateEntry } from "@/lib/diary";
-import { readLocalJson } from "@/lib/local-json";
-
+import { listEntries, readEntry, saveEntry } from "@/lib/diary";
+import { preparePhotos, readDiaryWrite } from "@/lib/diary-upload";
 import { invalidText, uuid, validDate } from "@/lib/record-input";
 
 function json(data: unknown, status = 200) {
@@ -23,10 +22,10 @@ export function GET(request: Request) {
 }
 
 async function writeEntry(request: Request) {
-  const input = await readLocalJson(request);
-  if (input instanceof Response) return input;
+  const payload = await readDiaryWrite(request);
+  if (payload instanceof Response) return payload;
+  const { input, photos, files } = payload;
   const { id, date, text, version } = input;
-  const create = request.method === "POST";
   if (typeof id !== "string" || !uuid.test(id)) return json({ error: "日记编号无效。" }, 400);
   if (!validDate(date)) return json({ error: "请选择有效的日记日期。" }, 400);
   if (typeof input.title !== "string" || !input.title.trim() || input.title.length > 80 ||
@@ -36,23 +35,17 @@ async function writeEntry(request: Request) {
   if (invalidText.test(input.title) || invalidText.test(text)) {
     return json({ error: "日记含有无法保存的字符，请重新输入该段文字。" }, 400);
   }
+  let expectedVersion: number | undefined;
+  if (request.method === "PUT") {
+    if (typeof version !== "number" || !Number.isSafeInteger(version) || version < 0) return json({ error: "日记版本无效。" }, 400);
+    expectedVersion = version;
+  }
+  const uploads = await preparePhotos(files);
+  if (uploads instanceof Response) return uploads;
   const entry = { id, date, title: input.title.trim(), text };
   try {
-    let saved;
-    if (create) saved = createEntry(entry);
-    else {
-      if (typeof version !== "number" || !Number.isSafeInteger(version) || version < 0) {
-        return json({ error: "日记版本无效。" }, 400);
-      }
-      saved = updateEntry({ ...entry, version });
-    }
-    if (saved) return json(saved, create ? 201 : 200);
-    const current = readEntry(id);
-    if (!current) return json({ error: "找不到这篇日记。" }, 404);
-    if (create && current.date === date && current.title === entry.title && current.text === text) {
-      return json(current);
-    }
-    return json({ current }, 409);
+    const { body, status } = saveEntry(entry, expectedVersion, photos, uploads);
+    return json(body, status);
   } catch {
     return json({ error: "暂时无法保存日记，请稍后重试。" }, 503);
   }

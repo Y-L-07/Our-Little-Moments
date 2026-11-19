@@ -21,6 +21,13 @@ export function openDatabase() {
         text TEXT NOT NULL,
         version INTEGER NOT NULL DEFAULT 0
       );
+      CREATE TABLE IF NOT EXISTS diary_photo (
+        id TEXT PRIMARY KEY COLLATE NOCASE NOT NULL,
+        diary_id TEXT COLLATE NOCASE NOT NULL REFERENCES diary(id) ON DELETE CASCADE,
+        position INTEGER NOT NULL,
+        data BLOB NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS diary_photo_order ON diary_photo(diary_id, position);
       CREATE TABLE IF NOT EXISTS anniversary (
         id TEXT PRIMARY KEY COLLATE NOCASE NOT NULL,
         title TEXT NOT NULL,
