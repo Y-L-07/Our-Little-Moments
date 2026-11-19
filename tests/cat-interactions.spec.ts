@@ -12,11 +12,11 @@ test("cat interactions start enabled without a separate animation switch", async
   await expect(page.getByRole("button", { name: "摸摸小灰", exact: true })).toBeVisible();
 });
 
-test("pupils follow both pointer axes inside fixed eyes while heads and the login card stay still", async ({ page }) => {
+test("pupils follow both pointer axes inside fixed eyes while heads and the note card stay still", async ({ page }) => {
   const portraits = page.getByTestId("cat-portrait");
   const eyes = page.getByTestId("cat-eye");
   const pupils = page.getByTestId("cat-pupil");
-  const card = page.getByTestId("login-card");
+  const card = page.getByTestId("note-card");
   await expect(page.getByTestId("cats")).toHaveAttribute("data-motion", "on");
   await expect(eyes).toHaveCount(4);
   await expect(pupils).toHaveCount(4);
@@ -56,14 +56,6 @@ test("pupils follow both pointer axes inside fixed eyes while heads and the logi
   await expect.poll(async () => (await gaze())[0][0]).toBeLessThan(0);
   await page.evaluate(() => document.documentElement.dispatchEvent(new Event("pointerleave")));
   await expect.poll(async () => (await gaze()).every(([x, y]) => x === 0 && y === 0)).toBe(true);
-  await page.getByLabel(/^密码(?:\s|$)/).focus();
-  await page.mouse.move(viewport.width - 2, viewport.height - 2);
-  await expect(page.getByTestId("cats")).toHaveAttribute("data-state", "covering");
-  await expect.poll(async () => (await gaze()).every(([x, y]) => x === 0 && y === 0)).toBe(true);
-  await expect(page.locator(".cat-art-normal").first()).toHaveCSS("opacity", "0");
-  await page.getByLabel(/^账号(?:\s|$)/).focus();
-  await page.mouse.move(2, 2);
-  await expect.poll(async () => (await gaze())[0][0]).toBeLessThan(0);
 });
 
 test("petting either cat changes only that cat and returns to its resting face", async ({ page }) => {
@@ -98,42 +90,19 @@ test("a repeated pet restarts the response instead of being cleared by an older 
   await expect(left).toHaveAttribute("data-expression", "normal");
 });
 
-test("keyboard users can pet both cats without submitting or changing the form", async ({ page }) => {
-  const account = page.getByLabel(/^账号(?:\s|$)/);
-  const password = page.getByLabel(/^密码(?:\s|$)/);
-  await account.fill("fictional-cat-friend");
-  await password.fill("fictional-demo-password");
-  const leftButton = page.getByRole("button", { name: "摸摸小橘", exact: true });
-  await expect(leftButton).toBeEnabled();
-  await leftButton.focus();
+test("keyboard users can pet both cats while an unsaved note stays editable", async ({ page }) => {
+  await page.getByRole("button", { name: "编辑笔记" }).click();
+  const draft = page.getByLabel("共同笔记", { exact: true });
+  await draft.fill("周末一起散步。");
+  const left = page.getByRole("button", { name: "摸摸小橘", exact: true });
+  await left.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("cat-left")).toHaveAttribute("data-expression", "content");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: "摸摸小灰", exact: true })).toBeFocused();
   await page.keyboard.press("Space");
   await expect(page.getByTestId("cat-right")).toHaveAttribute("data-expression", "content");
-  await expect(account).toHaveValue("fictional-cat-friend");
-  await expect(password).toHaveValue("fictional-demo-password");
-  await expect(page.getByText(/演示完成/)).toHaveCount(0);
-  await expect(page.getByText("请输入账号", { exact: true })).toHaveCount(0);
-});
-
-test("mouse petting preserves password focus and keeps both cats covering their eyes", async ({ page }) => {
-  await page.clock.install();
-  const password = page.getByLabel(/^密码(?:\s|$)/);
-  await password.fill("fictional-kept-private");
-  await page.getByRole("button", { name: "摸摸小橘", exact: true }).click();
-  await expect(password).toBeFocused();
-  await expect(password).toHaveValue("fictional-kept-private");
-  await expect(page.getByTestId("cats")).toHaveAttribute("data-state", "covering");
-  await expect(page.getByTestId("cat-left")).toHaveAttribute("data-expression", "covering");
-  await expect(page.getByTestId("cat-right")).toHaveAttribute("data-expression", "covering");
-  await expect(page.getByText("嘘，我们不偷看。", { exact: true })).toBeVisible();
-  await page.clock.fastForward(2300);
-  await expect(page.getByTestId("cat-left")).toHaveAttribute("data-expression", "covering");
-  await page.getByLabel(/^账号(?:\s|$)/).focus();
-  await expect(page.getByTestId("cat-left")).toHaveAttribute("data-expression", "normal");
-  await expect(page.getByTestId("cat-right")).toHaveAttribute("data-expression", "normal");
+  await expect(draft).toHaveValue("周末一起散步。");
 });
 
 test("system reduced motion keeps petting usable and responds to live preference changes", async ({ page }) => {
@@ -164,7 +133,4 @@ test("system reduced motion keeps petting usable and responds to live preference
     const matrix = new DOMMatrixReadOnly(transform === "none" ? undefined : transform);
     return matrix.m41 === 0 && matrix.m42 === 0;
   }))).toBe(true);
-  await page.getByLabel(/^密码(?:\s|$)/).fill("fictional-still-editable");
-  await expect(cats).toHaveAttribute("data-state", "covering");
-  await expect(page.getByLabel(/^密码(?:\s|$)/)).toHaveValue("fictional-still-editable");
 });

@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Our Little Moments · 我们的小日子",
-  description: "把平凡的日子，写成我们的故事。月光浪漫风情侣登录页界面演示，无真实登录功能。",
+  description: "月光下的共同笔记。任何能打开这一页的人，都可以读一读，写下今天的小事。",
   robots: { index: false, follow: false },
 };
 

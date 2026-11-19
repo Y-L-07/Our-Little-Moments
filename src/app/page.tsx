@@ -1,8 +1,13 @@
-import LoginForm from "@/components/login-form";
+import { connection } from "next/server";
+import SharedNote from "@/components/shared-note";
+import { readNote } from "@/lib/shared-note";
 
 const stars = [[8, 13], [18, 8], [29, 22], [39, 9], [62, 11], [75, 6], [89, 17], [95, 35], [5, 43], [14, 62], [27, 72], [8, 86], [36, 89], [66, 87], [79, 75], [92, 88], [85, 53], [70, 32], [20, 43], [93, 64], [47, 6], [55, 93]];
 
-export default function Home() {
+export default async function Home() {
+  await connection();
+  let note = null;
+  try { note = readNote(); } catch { /* Render the reload link when local storage is unavailable. */ }
   return (
     <div className="moonlight-page">
       <div className="night-sky" aria-hidden="true">
@@ -20,7 +25,7 @@ export default function Home() {
           <path d="m12 112 55-59 47 29 44-63 49 43" />
           <circle cx="12" cy="112" r="2" /><circle cx="67" cy="53" r="3" /><circle cx="114" cy="82" r="2" /><circle cx="158" cy="19" r="3" /><circle cx="207" cy="62" r="2" />
         </svg>
-        <LoginForm />
+        <SharedNote initialNote={note} />
         <aside className="night-letter" aria-hidden="true">
           <span className="letter-star">✧</span>
           <span className="night-caption">A LITTLE LIGHT, JUST FOR US</span>

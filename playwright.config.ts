@@ -1,15 +1,19 @@
 import { defineConfig, devices } from "@playwright/test";
+import { resolve } from "node:path";
+
+const testURL = "http://127.0.0.1:3101";
 
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  workers: 3,
+  // All browsers edit the same test note; each scenario starts with a stable version.
+  workers: 1,
   reporter: [["list"], ["html", { outputFolder: "artifacts/qa/report", open: "never" }]],
   outputDir: "artifacts/qa/results",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: testURL,
     viewport: { width: 1440, height: 900 },
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
@@ -20,10 +24,13 @@ export default defineConfig({
     { name: "webkit", use: { ...devices["Desktop Safari"], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
-    env: { NEXT_TELEMETRY_DISABLED: "1" },
+    command: "npm run dev -- --port 3101",
+    url: testURL,
+    reuseExistingServer: false,
+    env: {
+      NEXT_TELEMETRY_DISABLED: "1",
+      MOMENTS_NOTE_DIR: resolve("artifacts/qa/test-note-data"),
+    },
     timeout: 120_000,
   },
 });

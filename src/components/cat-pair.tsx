@@ -3,8 +3,6 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-export type CatState = "idle" | "watching" | "covering" | "happy";
-
 const cats = [
   { side: "left", name: "小橘", message: "小橘：呼噜呼噜，喜欢你。" },
   { side: "right", name: "小灰", message: "小灰：今天也要贴贴。" },
@@ -13,8 +11,7 @@ const cats = [
 // shortcut: eye coordinates match the current artwork; recalibrate when replacing it.
 const eyePositions = [[312, 534], [544, 531], [994, 535], [1227, 532]];
 
-export default function CatPair({ state, motionEnabled, ready }: {
-  state: CatState;
+export default function CatPair({ motionEnabled, ready }: {
   motionEnabled: boolean;
   ready: boolean;
 }) {
@@ -57,7 +54,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
       });
     }
 
-    if (!motionEnabled || state === "covering" || state === "happy" || petted !== null) {
+    if (!motionEnabled || petted !== null) {
       resetGaze();
       return;
     }
@@ -88,7 +85,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
       window.removeEventListener("blur", resetGaze);
       resetGaze();
     };
-  }, [motionEnabled, state, petted]);
+  }, [motionEnabled, petted]);
 
   function pet(index: number) {
     window.clearTimeout(petTimer.current);
@@ -97,10 +94,9 @@ export default function CatPair({ state, motionEnabled, ready }: {
   }
 
   return (
-    <div ref={catsRef} className="cat-pair" data-testid="cats" data-state={state} data-motion={motionEnabled ? "on" : "off"}>
+    <div ref={catsRef} className="cat-pair" data-testid="cats" data-motion={motionEnabled ? "on" : "off"}>
       {cats.map((cat, index) => {
-        const expression = state === "covering" ? "covering"
-          : petted === index || state === "happy" ? "content" : "normal";
+        const expression = petted === index ? "content" : "normal";
         return (
           <div key={cat.side} className={`cat-slot cat-slot-${cat.side}`} data-testid={`cat-${cat.side}`} data-expression={expression}>
             <div className="cat-portrait" data-testid="cat-portrait" aria-hidden="true">
@@ -125,7 +121,6 @@ export default function CatPair({ state, motionEnabled, ready }: {
                   ))}
                 </svg>
                 <Image className="cat-art cat-art-content" src="/images/cats/cats-content.png" alt="" width={1536} height={1024} unoptimized />
-                <Image className="cat-art cat-art-covered" src="/images/cats/cats-covering-eyes.png" alt="" width={1536} height={1024} unoptimized />
               </div>
             </div>
             <button
@@ -135,7 +130,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
               title={`摸摸${cat.name}`}
               disabled={!ready}
               onPointerDown={event => {
-                // A mouse pet should not steal focus from the password field.
+                // Keep the writing cursor in the note when petting a cat with the mouse.
                 if (event.pointerType === "mouse" && event.button === 0) event.preventDefault();
               }}
               onClick={() => pet(index)}
@@ -144,7 +139,7 @@ export default function CatPair({ state, motionEnabled, ready }: {
         );
       })}
       <p className="cat-response" role="status" aria-live="polite" aria-atomic="true">
-        {petted !== null ? state === "covering" ? "嘘，我们不偷看。" : cats[petted].message : ""}
+        {petted !== null ? cats[petted].message : ""}
       </p>
     </div>
   );
