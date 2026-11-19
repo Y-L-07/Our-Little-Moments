@@ -50,7 +50,7 @@ export default function WishList({ initialWishes }: { initialWishes: Wish[] }) {
       }
       requestAnimationFrame(() => {
         const target = adding ? input.current : document.getElementById("wish-" + saved.id);
-        if (document.activeElement === document.body || adding) target?.focus();
+        if (document.activeElement === document.body) target?.focus();
       });
     } catch {
       setError("暂时无法确认是否保存成功，可以重试。");
