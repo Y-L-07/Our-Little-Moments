@@ -85,7 +85,7 @@ export default function SharedNote({ initialNote }: { initialNote: Note | null }
           <p>把平凡的日子，写成我们的故事。</p>
         </header>
         <nav className="collection-links" aria-label="生活记录">
-          {[["/diary", "打开日记本"], ["/anniversaries", "纪念日"]].map(([href, title]) => (
+          {[["/diary", "打开日记本"], ["/anniversaries", "纪念日"], ["/wishes", "愿望清单"]].map(([href, title]) => (
             <Link key={href} href={href} onNavigate={event => {
               if (saving || (editing && draft !== note?.text && !window.confirm("共同笔记还有未保存的修改，确定离开吗？"))) {
                 event.preventDefault();
