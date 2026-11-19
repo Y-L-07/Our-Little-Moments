@@ -1,0 +1,80 @@
+.launcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+}
+.launcher span { color: var(--accent); font-size: 19px; }
+.launcher:hover, .close:hover, .memory button:hover:enabled { background: #2b3d57; }
+.dialog {
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  margin: auto;
+  padding: 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid #6e716e;
+  border-radius: 16px;
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: 0 18px 65px #070d1d88;
+}
+.dialog::backdrop { background: #080e1bd6; }
+.header, .actions, .memoryInput, .memory li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.header { align-items: flex-start; }
+.header h2 { margin: 0; color: var(--accent); font: 23px/1.4 Georgia, "Songti SC", SimSun, serif; }
+.header p, .memory > p, .actions span { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.close { width: 36px; height: 36px; flex: none; border-radius: 50%; font-size: 25px; line-height: 1; color: var(--muted); }
+.log {
+  height: clamp(112px, 25vh, 250px);
+  margin: 18px 0 15px;
+  padding: 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #142136;
+}
+.empty { display: grid; height: 100%; place-items: center; margin: 0; color: var(--muted); font-size: 14px; }
+.visitor, .assistant { max-width: 90%; width: fit-content; margin: 0 0 12px; }
+.visitor { margin-left: auto; }
+.log strong { display: block; margin-bottom: 2px; font-size: 11px; font-weight: 500; color: var(--accent); }
+.visitor strong { text-align: right; }
+.log p:not(.empty) { margin: 0; padding: 7px 11px; border-radius: 8px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; background: #26374d; }
+.visitor p:not(.empty) { background: #354353; }
+.dialog label { display: block; margin-bottom: 6px; color: var(--ink); font-size: 13px; }
+.dialog textarea, .dialog input {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #63718a;
+  border-radius: 7px;
+  background: #142136;
+  color: var(--ink);
+  font: inherit;
+}
+.dialog textarea { min-height: 64px; resize: vertical; }
+.dialog textarea::placeholder { color: var(--muted); }
+.actions { margin-top: 9px; }
+.actions span { margin: 0; }
+.send, .memory button { padding: 5px 13px; min-height: 36px; border-radius: 7px; font-size: 13px; }
+.send { min-width: 74px; color: #222a36; background: var(--accent); }
+.send:hover:enabled { background: #eed7ad; }
+.dialog button:disabled { opacity: .55; }
+.memory { margin-top: 16px; padding-top: 11px; border-top: 1px solid var(--line); }
+.memory summary { width: fit-content; padding: 3px 0; cursor: pointer; font-size: 13px; color: var(--accent); }
+.memory ul { margin: 10px 0; padding: 0; list-style: none; }
+.memory li { margin: 4px 0; overflow-wrap: anywhere; }
+.memory form { margin-top: 10px; }
+.memory button { flex: none; border: 1px solid var(--line); color: var(--accent); }
+.dialog :is(input, summary, [role="log"]):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.error, .notice:not(:empty) { margin: 10px 0 0; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.error { color: #ffb3a7; }
+.notice { margin: 0; color: #d0e5d6; }

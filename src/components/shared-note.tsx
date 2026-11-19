@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import type { Note } from "@/lib/shared-note";
 import CatPair from "./cat-pair";
+import JournalAssistant from "./journal-assistant";
 
 const subscribeToHydration = () => () => {};
 const getReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -113,6 +114,7 @@ export default function SharedNote({ initialNote }: { initialNote: Note | null }
         )}
         {error && <p className="note-error" role="alert">{error}</p>}
         <p className="feedback" role="status">{feedback}</p>
+        <JournalAssistant />
       </article>
       <p className="scene-caption">点点小猫，收下一点点偏爱。</p>
       {ready && reducedMotion && <p className="motion-note">已跟随系统“减少动态效果”设置</p>}

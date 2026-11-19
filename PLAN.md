@@ -12,6 +12,8 @@
 | 同时编辑 | 用两个独立窗口编辑同一版本。第一个保存后，第二个再保存时会看见最新正文，自己的草稿仍在，可对照后再保存。 |
 | 重启后回看 | 重新启动服务并使用同一数据目录，先前保存的内容仍可读取。 |
 | 猫咪与键盘 | 瞳孔在眼内轻微跟随鼠标，眼框与卡片稳定。点击不同小猫或使用键盘触发互动，可看到各自的回应。开启系统“减少动态效果”后仍可编辑和保存。 |
+| 背景音乐 | 打开页面会尝试播放，浏览器需要用户操作时点击页面即可开始。主动暂停后刷新页面，音乐应保持暂停。 |
+| AI 与记忆 | 向助手发送“记住：我们喜欢桂花茶”。刷新后问它喜欢哪种茶，在“管理记忆”中删除该条，再刷新确认记忆已清除。 |
 
 日常预览使用本机 3001 端口。正文写入本地服务的数据目录，浏览器标签页刷新后读取最新版本。当前提供一份共享正文，修改权限对能访问页面的人相同。
 
@@ -21,6 +23,7 @@
 | --- | --- |
 | 首页、编辑与反馈 | `src/app/page.tsx`、`src/components/shared-note.tsx`、`src/app/globals.css` |
 | 共享正文的读写与版本检查 | `src/app/api/note/route.ts`、`src/lib/shared-note.ts` |
+| AI 助手与浏览器记忆 | `src/components/journal-assistant.tsx`、`src/app/api/assistant/route.ts`。模型准备及启动脚本在 `scripts/`。 |
 | 正文存储 | 默认 `.local-data/note.sqlite`。可在启动时通过 `MOMENTS_NOTE_DIR` 指定数据目录。测试单独使用一个目录。 |
 | 双猫互动与插画 | `src/components/cat-pair.tsx`、`public/images/cats/`。[原稿与提示词](assets/source/cats/README.md) |
 | 浏览器行为验证 | `tests/`，涵盖共享正文读写及双猫互动。 |

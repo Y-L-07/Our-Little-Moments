@@ -30,6 +30,7 @@ export default defineConfig({
     env: {
       NEXT_TELEMETRY_DISABLED: "1",
       MOMENTS_NOTE_DIR: resolve("artifacts/qa/test-note-data"),
+      MOMENTS_AI_PORT: "39282",
     },
     timeout: 120_000,
   },

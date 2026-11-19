@@ -28,6 +28,22 @@ npm run dev -- --port 3001
 
 曲子由八小节原创旋律和分解和弦组成。音频随网站提供。乐谱与合成程序保存于 [moonlit-window.py](assets/source/music/moonlit-window.py)，使用 Python 3 运行它可重新生成播放器使用的 WAV 文件。
 
+## 月光 AI 助手
+
+在共同笔记下方打开“月光 AI 助手”，可以请它帮忙起日记标题、想约会点子，或接着上一句话聊。它使用这台电脑上的中文模型。每次提问只传入当前问题、近期对话和主动保存的记忆，共同笔记正文不自动加入对话。
+
+输入“记住：我们喜欢桂花茶”，或在“管理记忆”中添加一条。刷新后再问“我们喜欢什么茶？”就可以试试它是否记得。在“管理记忆”中可以逐条删除。同一浏览器、同一网站地址的访客共用这些记忆；换浏览器或换设备就有各自的记忆。可保存 12 条，每条最多 160 个 UTF-16 代码单元。普通聊天只在当前页面中保留，刷新即清空。
+
+本地模型首次准备需要 Windows x64、约 520 MB 的下载和网络连接。从项目根目录运行以下 PowerShell 命令。
+
+```powershell
+.\scripts\start-local-model.ps1
+```
+
+准备完成后，`npm run dev` 或 `npm start` 会自动启动已缓存的模型。引擎和权重保存在 `.local-data/model/`，助手通过本机 39281 端口推理，运行时无需 API 密钥。模型停止或不可用时，界面会保留本次输入并提供重试。
+
+模型为 Qwen2.5-0.5B-Instruct 的 Q4_K_M 量化版（Apache-2.0），推理程序为 llama.cpp b12359（MIT）。准备脚本会核对下载文件的 SHA-256。[模型原版与许可证](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF) · [推理程序发行版](https://github.com/ggml-org/llama.cpp/releases/tag/b12359)
+
 ## 检查与构建
 
 浏览器测试使用本机安装的 Google Chrome、Playwright Firefox 和 WebKit。首次运行前执行 `npx playwright install firefox webkit`。先停止已运行的开发模式，再运行测试。测试会在 3101 端口启动自己的开发服务，使用独立的数据目录。
