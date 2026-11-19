@@ -1,4 +1,5 @@
 import { connection } from "next/server";
+import BackgroundMusic from "@/components/background-music";
 import SharedNote from "@/components/shared-note";
 import { readNote } from "@/lib/shared-note";
 
@@ -10,6 +11,7 @@ export default async function Home() {
   try { note = readNote(); } catch { /* Render the reload link when local storage is unavailable. */ }
   return (
     <div className="moonlight-page">
+      <BackgroundMusic />
       <div className="night-sky" aria-hidden="true">
         {stars.map(([x, y], index) => <span key={index} className={index % 5 === 0 ? "star star-bright" : "star"} style={{ left: x + "%", top: y + "%" }} />)}
       </div>

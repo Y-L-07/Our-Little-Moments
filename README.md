@@ -22,6 +22,12 @@ npm run dev -- --port 3001
 
 服务使用 Node.js 自带的 SQLite 保存正文。默认文件为项目下的 `.local-data/note.sqlite`，重启服务并使用同一目录时可继续阅读。启动前设置环境变量 `MOMENTS_NOTE_DIR` 可以指定其他数据目录。网页上的保存操作只更新本机数据文件，Git 仓库只同步项目代码和素材。
 
+## 月光背景音乐
+
+进入首页后会尝试低音量循环播放原创器乐曲《月下窗边》。浏览器若要求先操作，点击页面、按键或选择右上角的“播放音乐”即可开始。选择“暂停音乐”后，同一浏览器下次访问时也会保持暂停。
+
+曲子由八小节原创旋律和分解和弦组成。音频随网站提供。乐谱与合成程序保存于 [moonlit-window.py](assets/source/music/moonlit-window.py)，使用 Python 3 运行它可重新生成播放器使用的 WAV 文件。
+
 ## 检查与构建
 
 浏览器测试使用本机安装的 Google Chrome、Playwright Firefox 和 WebKit。首次运行前执行 `npx playwright install firefox webkit`。先停止已运行的开发模式，再运行测试。测试会在 3101 端口启动自己的开发服务，使用独立的数据目录。

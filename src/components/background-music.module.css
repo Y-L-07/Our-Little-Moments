@@ -1,0 +1,19 @@
+.control {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--night);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.control span { color: var(--accent); font-size: 17px; }
+.control:hover { border-color: var(--accent); color: var(--ink); }
