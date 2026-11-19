@@ -78,3 +78,11 @@
 .error, .notice:not(:empty) { margin: 10px 0 0; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
 .error { color: #ffb3a7; }
 .notice { margin: 0; color: #d0e5d6; }
+@media (max-width: 700px) {
+  .launcher, .send, .memory button, .memory summary { min-height: 44px; }
+  .dialog { width: min(480px, calc(100% - 24px)); max-height: calc(100dvh - 20px); padding: 16px; }
+  .dialog input, .dialog textarea { min-width: 0; min-height: 44px; font-size: 16px; }
+  .close { width: 44px; height: 44px; }
+  .log { height: clamp(72px, 23dvh, 180px); }
+  .memory summary { padding: 12px 0; }
+}

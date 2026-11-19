@@ -13,6 +13,12 @@ npm run dev -- --port 3001
 
 打开[本地预览](http://127.0.0.1:3001)。首次打开会看到一段关于散步遇见小橘猫的虚构记录。
 
+### 在手机上查看
+
+手机上写日记时，目录会暂时收起，日期、正文、选图和保存按钮按一列排列，可以上下滚动。点小猫能看到回应，点已保存的照片可以放大。
+
+服务只监听电脑的本地地址。用 Android 手机查看时，可以通过 USB 连接电脑，按 Chrome 的说明开启调试，将手机的 `3001` 端口转发到电脑的 `localhost:3001`，然后在手机 Chrome 打开 `http://localhost:3001/diary`。[Chrome 的手机端口转发说明](https://developer.chrome.com/docs/devtools/remote-debugging/local-server)
+
 ## 一起写笔记
 
 - 点击“编辑笔记”修改正文，再点“保存修改”。另一个浏览器窗口打开或刷新首页后，就能读到同一份内容。
@@ -68,7 +74,7 @@ npm run dev -- --port 3001
 
 ## 检查与构建
 
-浏览器测试使用本机安装的 Google Chrome、Playwright Firefox 和 WebKit。首次运行前执行 `npx playwright install firefox webkit`。先停止已运行的开发模式，再运行测试。测试会在 3101 端口启动自己的开发服务，使用独立的数据目录。
+浏览器测试使用本机安装的 Google Chrome、Playwright Firefox 和 WebKit。手机场景在 Chrome 和 WebKit 模拟触摸、选图和输入时的可用高度。首次运行前执行 `npx playwright install firefox webkit`。先停止已运行的开发模式，再运行测试。测试会在 3101 端口启动自己的开发服务，使用独立的数据目录和程序生成的测试图片。
 
 ```sh
 npm run typecheck
@@ -82,4 +88,4 @@ npm run build
 
 - 共享笔记页使用生成的透明双猫插画。探头和眯眼两张图用于当前互动，旧版捂眼插画保存在原稿中。[插画原稿与提示词](assets/source/cats/README.md)
 - 弯月、星点与拱窗由 CSS 和 SVG 绘制。旧手账版的虚构早餐照片也保留了来源记录。[旧版照片来源](assets/source/scrapbook/README.md)
-- 开发范围、验收步骤与以后可增设的记录功能见[项目计划](PLAN.md)。提交和同步方式见[协作约定](AGENTS.md)。
+- 各项功能与桌面、手机的验收步骤见[项目计划](PLAN.md)。提交和同步方式见[协作约定](AGENTS.md)。

@@ -17,3 +17,6 @@
 
 .control span { color: var(--accent); font-size: 17px; }
 .control:hover { border-color: var(--accent); color: var(--ink); }
+@media (max-width: 700px) {
+  .control { top: 8px; right: 12px; min-height: 44px; }
+}
