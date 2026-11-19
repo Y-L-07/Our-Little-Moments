@@ -20,6 +20,12 @@ export function openDatabase() {
         title TEXT NOT NULL,
         text TEXT NOT NULL,
         version INTEGER NOT NULL DEFAULT 0
+      );
+      CREATE TABLE IF NOT EXISTS anniversary (
+        id TEXT PRIMARY KEY COLLATE NOCASE NOT NULL,
+        title TEXT NOT NULL,
+        date TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 0
       );`);
     db.prepare("INSERT OR IGNORE INTO note (id, text, version) VALUES (1, ?, 0)")
       .run("今晚散步时，巷口的小橘猫又趴在窗边。\n下次路过，我们一起向它打个招呼。");

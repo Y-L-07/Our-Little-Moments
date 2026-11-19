@@ -58,10 +58,9 @@ h1 em { font-weight: 400; }
 .welcome-copy p { margin: 0; font-size: 13px; letter-spacing: 1px; color: var(--muted); }
 .sharing-note { margin: 0 0 17px; padding-top: 15px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.8; }
 .note-heading { display: block; margin: 0 0 9px; color: var(--accent); font-size: 15px; font-weight: 600; letter-spacing: 1px; }
-.note-heading-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 9px; }
-.note-heading-row .note-heading { margin: 0; }
-.note-card .note-heading-row a { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); }
-.note-heading-row a:hover { text-decoration-color: var(--accent); }
+.collection-links { display: flex; align-items: stretch; gap: 7px; margin-bottom: 15px; }
+.note-card .collection-links a { flex: 1; display: grid; place-items: center; min-height: 38px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: #192639; color: var(--ink); text-align: center; text-decoration: none; font-size: 13px; }
+.note-card .collection-links a:hover { color: var(--accent); border-color: var(--accent); }
 .note-text, .note-card textarea { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; }
 .note-paper, .note-card textarea { width: 100%; padding: 11px 15px; border: 1px solid var(--line); border-radius: 8px; background: #142136; color: var(--ink); }
 .note-paper { min-height: 104px; max-height: 240px; margin: 0 0 16px; overflow: auto; }

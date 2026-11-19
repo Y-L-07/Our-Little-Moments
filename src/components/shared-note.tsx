@@ -84,13 +84,17 @@ export default function SharedNote({ initialNote }: { initialNote: Note | null }
           <h1 id="welcome-title">Our Little<br /><em>Moments</em><span className="title-heart" aria-hidden="true">♡</span></h1>
           <p>把平凡的日子，写成我们的故事。</p>
         </header>
+        <nav className="collection-links" aria-label="生活记录">
+          {[["/diary", "打开日记本"], ["/anniversaries", "纪念日"]].map(([href, title]) => (
+            <Link key={href} href={href} onNavigate={event => {
+              if (saving || (editing && draft !== note?.text && !window.confirm("共同笔记还有未保存的修改，确定离开吗？"))) {
+                event.preventDefault();
+              }
+            }}>{title}</Link>
+          ))}
+        </nav>
         <p className="sharing-note">任何能打开此页的人都可以阅读和修改这份笔记。</p>
-        {!editing && (
-          <div className="note-heading-row">
-            <h2 className="note-heading">共同笔记</h2>
-            <Link href="/diary">打开日记本 <span aria-hidden="true">↗</span></Link>
-          </div>
-        )}
+        {!editing && <h2 className="note-heading">共同笔记</h2>}
         {!note ? (
           <p role="alert">暂时无法读取共同笔记。<a href="/">重新加载</a></p>
         ) : draft !== null ? (

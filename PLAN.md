@@ -13,6 +13,7 @@
 | 重启后回看 | 重新启动服务并使用同一数据目录，先前保存的内容仍可读取。 |
 | 写日记和按日期回看 | 在同一日期写两篇日记，在另一日期再写一篇。按第一天筛选，可以分别打开当天的两篇日记。清除筛选后，三篇均可查阅。 |
 | 共同编辑日记 | 两个窗口打开同一篇。一个保存后，另一个仍可对照最新内容调整草稿，再次保存。回到首页可以继续编辑原来的共同笔记。 |
+| 纪念日 | 分别添加过去、今天和未来的日期，查看已过天数、当天提示和倒计时。修改名称或日期后再打开，仍能读到新值。 |
 | 猫咪与键盘 | 瞳孔在眼内轻微跟随鼠标，眼框与卡片稳定。点击不同小猫或使用键盘触发互动，可看到各自的回应。开启系统“减少动态效果”后仍可编辑和保存。 |
 | 背景音乐 | 打开页面会尝试播放，浏览器需要用户操作时点击页面即可开始。主动暂停后刷新页面，音乐应保持暂停。 |
 | AI 与记忆 | 向助手发送“记住：我们喜欢桂花茶”。刷新后问它喜欢哪种茶，在“管理记忆”中删除该条，再刷新确认记忆已清除。 |
@@ -26,6 +27,7 @@
 | 首页、编辑与反馈 | `src/app/page.tsx`、`src/components/shared-note.tsx`、`src/app/globals.css` |
 | 共享正文的读写与版本检查 | `src/app/api/note/route.ts`、`src/lib/shared-note.ts` |
 | 日记本、日期筛选和日记读写 | `src/app/diary/page.tsx`、`src/components/diary-book.tsx`、`src/app/api/diary/route.ts`、`src/lib/diary.ts` |
+| 纪念日、倒计时和记录编辑 | `src/app/anniversaries/`、`src/components/anniversary-list.tsx`、`src/app/api/anniversaries/`、`src/lib/anniversaries.ts` |
 | AI 助手与浏览器记忆 | `src/components/journal-assistant.tsx`、`src/app/api/assistant/route.ts`。模型准备及启动脚本在 `scripts/`。 |
 | 正文存储 | 默认 `.local-data/note.sqlite`。可在启动时通过 `MOMENTS_NOTE_DIR` 指定数据目录。测试单独使用一个目录。 |
 | 双猫互动与插画 | `src/components/cat-pair.tsx`、`public/images/cats/`。[原稿与提示词](assets/source/cats/README.md) |
@@ -33,7 +35,7 @@
 
 ## 3. 后续可讨论的功能
 
-- **照片、纪念日与共同愿望**。可以分别尝试从某篇日记翻看照片、按日期查看纪念日、共同勾选一个愿望。每次选一种使用情境单独规划。
+- **照片与共同愿望**。可以尝试从某篇日记翻看照片，或共同勾选一个愿望。
 - **手机体验**。后续再安排窄屏布局、软键盘打开时的保存操作和触摸体验。当前版本以桌面为验收范围。
 
 ## 4. 每次交付时检查
