@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import Link from "next/link";
 import type { Note } from "@/lib/shared-note";
 import CatPair from "./cat-pair";
 import JournalAssistant from "./journal-assistant";
@@ -84,6 +85,12 @@ export default function SharedNote({ initialNote }: { initialNote: Note | null }
           <p>把平凡的日子，写成我们的故事。</p>
         </header>
         <p className="sharing-note">任何能打开此页的人都可以阅读和修改这份笔记。</p>
+        {!editing && (
+          <div className="note-heading-row">
+            <h2 className="note-heading">共同笔记</h2>
+            <Link href="/diary">打开日记本 <span aria-hidden="true">↗</span></Link>
+          </div>
+        )}
         {!note ? (
           <p role="alert">暂时无法读取共同笔记。<a href="/">重新加载</a></p>
         ) : draft !== null ? (
@@ -105,7 +112,6 @@ export default function SharedNote({ initialNote }: { initialNote: Note | null }
           </form>
         ) : (
           <div>
-            <h2 className="note-heading">共同笔记</h2>
             <p className="note-text note-paper">{note.text || "这页还是空白，写下第一句话吧。"}</p>
             <button className="note-primary" type="button" disabled={!ready} ref={editButton}
               onClick={() => { setFeedback(""); setDraft(note.text); }}>编辑笔记</button>

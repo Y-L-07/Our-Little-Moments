@@ -1,3 +1,5 @@
+import { readLocalJson } from "@/lib/local-json";
+
 type Message = { role: "user" | "assistant"; content: string };
 type Chat = { messages: Message[]; memories: string[] };
 
@@ -37,32 +39,8 @@ function error(message: string, status: number) {
 }
 
 export async function POST(request: Request) {
-  const url = new URL(request.url);
-  const origin = request.headers.get("origin");
-  if (origin && origin !== url.origin && origin !== `${url.protocol}//${request.headers.get("host")}`) {
-    return error("请从本站打开助手。", 403);
-  }
-  if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json") {
-    return error("聊天消息需要使用 JSON 格式。", 415);
-  }
-  const reader = request.body?.getReader();
-  if (!reader) return error("请先输入消息。", 400);
-  let chat: unknown;
-  try {
-    const chunks: Uint8Array[] = [];
-    let bytes = 0;
-    for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
-      bytes += chunk.value.length;
-      if (bytes > 160 * 1024) {
-        await reader.cancel();
-        return error("对话太长，请缩短后再发送。", 413);
-      }
-      chunks.push(chunk.value);
-    }
-    chat = JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  } catch {
-    return error("无法读取聊天消息。", 400);
-  }
+  const chat = await readLocalJson(request, 160 * 1024);
+  if (chat instanceof Response) return chat;
   if (!validChat(chat)) return error("消息或记忆的格式、长度有误。", 400);
 
   const port = Number(process.env.MOMENTS_AI_PORT || 39281);
